@@ -1,23 +1,9 @@
 //load modules
-const Joi = require("@hapi/joi");
-const mongoose = require("mongoose");
+const { Category, validate } = require("../models/categories");
 
 //express
 const express = require("express");
 const router = express.Router();
-
-//mongoose
-const Category = mongoose.model(
-  "Category",
-  new mongoose.Schema({
-    name: {
-      type: String,
-      required: true,
-      minlength: 3,
-      maxlength: 50,
-    },
-  })
-);
 
 router.get("/", async (req, res) => {
   const categories = await Category.find().sort("name");
@@ -26,7 +12,7 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { error } = validateCategory(req.body);
+  const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error[0].message);
 
@@ -47,7 +33,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  const { error } = validateCategory(req.body);
+  const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -73,13 +59,5 @@ router.delete("/:id", async (req, res) => {
 
   res.send(category);
 });
-
-function validateCategory(category) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(50).required(),
-  });
-
-  return schema.validate(category);
-}
 
 module.exports = router;
