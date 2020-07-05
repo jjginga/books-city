@@ -21,6 +21,7 @@ const Category = mongoose.model(
 
 router.get("/", async (req, res) => {
   const categories = await Category.find().sort("name");
+
   res.send(categories);
 });
 
@@ -28,6 +29,8 @@ router.post("/", async (req, res) => {
   const { error } = validateCategory(req.body);
 
   if (error) return res.status(400).send(error[0].message);
+
+  //TODO: verify if category already exists
 
   let category = new Category({ name: req.body.name });
 
@@ -45,6 +48,7 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { error } = validateCategory(req.body);
+
   if (error) return res.status(400).send(error.details[0].message);
 
   const category = await Category.findByIdAndUpdate(
@@ -72,7 +76,7 @@ router.delete("/:id", async (req, res) => {
 
 function validateCategory(category) {
   const schema = Joi.object({
-    name: Joi.string().min(3).required(),
+    name: Joi.string().min(3).max(50).required(),
   });
 
   return schema.validate(category);

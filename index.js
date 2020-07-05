@@ -12,6 +12,7 @@ const app = express();
 //Custom
 const home = require("./routes/home");
 const categories = require("./routes/categories");
+const customers = require("./routes/customers");
 
 //connect to the database
 mongoose
@@ -32,6 +33,7 @@ app.use(helmet());
 //Custom
 app.use("/", home);
 app.use("/api/categories", categories);
+app.use("/api/customers", customers);
 
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));
