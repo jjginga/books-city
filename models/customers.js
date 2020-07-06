@@ -16,6 +16,7 @@ const Customer = mongoose.model(
       type: String,
       minlength: 9,
       maxlength: 15,
+      match: [/^\d+$/],
     },
     isGold: {
       type: Boolean,
@@ -28,7 +29,7 @@ const Customer = mongoose.model(
 function validateCustomer(customer) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50).required(),
-    phone: Joi.string().min(9).max(15).required(),
+    phone: Joi.string().min(9).max(15).regex(/^d+$/).required(),
     isGold: Joi.boolean(),
   });
 

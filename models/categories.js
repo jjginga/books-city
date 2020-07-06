@@ -1,21 +1,18 @@
-//load modules
 const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
 
-//model definition
-const Category = mongoose.model(
-  "Category",
-  new mongoose.Schema({
-    name: {
-      type: String,
-      required: true,
-      minlength: 3,
-      maxlength: 50,
-    },
-  })
-);
+const categorySchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    minlength: 3,
+    maxlength: 50,
+    unique: true,
+  },
+});
 
-//model validation
+const Category = mongoose.model("Category", categorySchema);
+
 function validateCategory(category) {
   const schema = Joi.object({
     name: Joi.string().min(3).max(50).required(),
@@ -25,4 +22,5 @@ function validateCategory(category) {
 }
 
 module.exports.Category = Category;
+module.exports.categorySchema = categorySchema;
 module.exports.validate = validateCategory;

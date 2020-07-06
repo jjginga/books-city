@@ -13,6 +13,9 @@ const app = express();
 const home = require("./routes/home");
 const categories = require("./routes/categories");
 const customers = require("./routes/customers");
+const authors = require("./routes/authors");
+const publishers = require("./routes/publishers");
+const books = require("./routes/books");
 
 //connect to the database
 mongoose
@@ -20,6 +23,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
+    useCreateIndex: true,
   })
   .then(() => debuger("Connected to the database..."))
   .catch((error) => debuger(error.message));
@@ -34,6 +38,9 @@ app.use(helmet());
 app.use("/", home);
 app.use("/api/categories", categories);
 app.use("/api/customers", customers);
+app.use("/api/authors", authors);
+app.use("/api/publishers", publishers);
+app.use("/api/books", books);
 
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));
