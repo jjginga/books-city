@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
   let customer = new Customer({
     name: req.body.name,
     phone: req.body.phone,
-    isGold: req.body.isGold,
+    hasBook: req.body.hasBook,
   });
 
   customer = await customer.save();
@@ -42,7 +42,7 @@ router.put("/:id", async (req, res) => {
 
   const customer = await Customer.findByIdAndUpdate(
     req.params.id,
-    { name: req.body.name, phone: req.body.phone, isGold: req.body.isGold },
+    { name: req.body.name, phone: req.body.phone, hasBook: req.body.hasBook },
     { new: true }
   );
 

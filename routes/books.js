@@ -44,7 +44,8 @@ router.post("/", async (req, res) => {
       name: category.name,
     },
     stock: req.body.stock,
-    monthlySales: req.body.monthlySales,
+    availableBooks: req.body.availableBooks,
+    yearlyLends: req.body.yearlyLends,
   });
 
   book = await book.save();
@@ -75,24 +76,29 @@ router.put("/:id", async (req, res) => {
   if (!category)
     return res.status(400).send("There is no category with that Id.");
 
-  const book = new Book({
-    title: req.body.title,
-    author: {
-      _id: author._id,
-      firstName: author.firstName,
-      lastName: author.lastName,
+  const book = await Book.findByIdAndUpdate(
+    req.params.id,
+    {
+      title: req.body.title,
+      author: {
+        _id: author._id,
+        firstName: author.firstName,
+        lastName: author.lastName,
+      },
+      publisher: {
+        _id: publisher._id,
+        name: publisher.name,
+      },
+      category: {
+        _id: category._id,
+        name: category.name,
+      },
+      stock: req.body.stock,
+      availableBooks: req.body.availableBooks,
+      yearlyLends: req.body.yearlyLends,
     },
-    publisher: {
-      _id: publisher._id,
-      name: publisher.name,
-    },
-    category: {
-      _id: category._id,
-      name: category.name,
-    },
-    stock: req.body.stock,
-    monthlySales: req.body.monthlySales,
-  });
+    { new: true }
+  );
 
   if (!book)
     return res.status(404).send("The book with the given Id was not found.");

@@ -16,6 +16,7 @@ const customers = require("./routes/customers");
 const authors = require("./routes/authors");
 const publishers = require("./routes/publishers");
 const books = require("./routes/books");
+const lends = require("./routes/lendings");
 
 //connect to the database
 mongoose
@@ -23,7 +24,6 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
-    useCreateIndex: true,
   })
   .then(() => debuger("Connected to the database..."))
   .catch((error) => debuger(error.message));
@@ -41,6 +41,7 @@ app.use("/api/customers", customers);
 app.use("/api/authors", authors);
 app.use("/api/publishers", publishers);
 app.use("/api/books", books);
+app.use("/api/lendings", lends);
 
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));

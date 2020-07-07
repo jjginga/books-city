@@ -1,5 +1,4 @@
 const Joi = require("@hapi/joi");
-Joi.objectId = require("joi-objectid")(Joi);
 const mongoose = require("mongoose");
 const { authorSchema } = require("./authors");
 const { categorySchema } = require("./categories");
@@ -36,7 +35,15 @@ const Book = mongoose.model(
         message: "{VALUE} is not an integer value",
       },
     },
-    monthlySales: {
+    availableBooks: {
+      type: Number,
+      min: 0,
+      validate: {
+        validator: Number.isInteger,
+        message: "{VALUE} is not an integer value",
+      },
+    },
+    yearlyLends: {
       type: Number,
       min: 0,
       validate: {
@@ -48,13 +55,16 @@ const Book = mongoose.model(
 );
 
 function validateBook(book) {
+  const idPattern = /^[0-9a-fA-F]{24}$/;
+
   const schema = Joi.object({
     title: Joi.string().min(3).max(50).required(),
-    authorId: Joi.objectId().required(),
-    categoryId: Joi.objectId().required(),
-    publisherId: Joi.objectId().required(),
+    authorId: Joi.string().regex(idPattern).required(),
+    categoryId: Joi.string().regex(idPattern).required(),
+    publisherId: Joi.string().regex(idPattern).required(),
     stock: Joi.number().integer().required(),
-    monthlySales: Joi.number().integer(),
+    availableBooks: Joi.number().integer(),
+    yearlyLends: Joi.number().integer(),
   });
 
   return schema.validate(book);
