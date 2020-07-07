@@ -4,6 +4,7 @@ const debuger = require("debug")("app:debug");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 //express
 const express = require("express");
@@ -33,6 +34,7 @@ app.use(express.json());
 
 //Third Party Middleware
 app.use(helmet());
+app.use(bodyParser.json());
 
 //Custom
 app.use("/", home);

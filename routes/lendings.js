@@ -2,12 +2,17 @@ const { Lend, validate, validateReturn } = require("../models/lendings");
 const { Customer } = require("../models/customers");
 const { Book } = require("../models/books");
 
+const mongoose = require("mongoose");
+const Fawn = require("fawn");
+
 const express = require("express");
 const router = express.Router();
 
+Fawn.init(mongoose);
+
 router.get("/", async (req, res) => {
   const lendings = await Lend.find().sort("-outDate");
-  res.send(lendings);
+  return res.send(lendings);
 });
 
 router.post("/", async (req, res) => {
@@ -37,14 +42,29 @@ router.post("/", async (req, res) => {
     },
   });
 
-  lend = await lend.save();
+  try {
+    new Fawn.Task()
+      .save("lends", lend)
+      .update(
+        "books",
+        { _id: book._id },
+        {
+          $inc: { availableBooks: -1 },
+        }
+      )
+      .update(
+        "customers",
+        { _id: customer._id },
+        {
+          $set: { hasBook: true },
+        }
+      )
+      .run();
 
-  customer.hasBook = true;
-  customer.save();
-  book.availableBooks--;
-  book.save();
-
-  res.send(lend);
+    return res.send(lend);
+  } catch (error) {
+    return res.status(500).send("Something went wrong.");
+  }
 });
 
 router.put("/:id", async (req, res) => {
@@ -56,25 +76,42 @@ router.put("/:id", async (req, res) => {
   if (!lend)
     return res.status(404).send("The lend with the given Id was not found");
 
-  lend.hasReturned = req.body.hasReturned;
+  if (!req.body.hasReturned) {
+    lend.returnDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
 
-  if (!lend.hasReturned) {
-    lend.returnDate = () => Date.now() + 7 * 24 * 60 * 60 * 1000;
     lend.save();
-    res.send(lend);
+    return res.send(lend);
   }
 
-  const customer = await Customer.findById(lend.customer._id);
-  const book = await Book.findById(lend.book._id);
+  try {
+    new Fawn.Task()
+      .update(
+        "lends",
+        { _id: lend._id },
+        {
+          $set: { hasReturned: true },
+        }
+      )
+      .update(
+        "customers",
+        { _id: lend.customer._id },
+        {
+          $set: { hasBook: false },
+        }
+      )
+      .update(
+        "books",
+        { _id: lend.book._id },
+        {
+          $inc: { availableBooks: +1 },
+        }
+      )
+      .run();
 
-  book.availableBooks++;
-  customer.hasBook = false;
-
-  customer.save();
-  book.save();
-  lend.save();
-
-  res.send(lend);
+    return res.send(lend);
+  } catch (error) {
+    return res.status(500).send("Something went wrong.", error.message);
+  }
 });
 
 module.exports = router;
