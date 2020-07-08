@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "fawn": "^2.1.5",
     "helmet": "^3.23.3",
+    "joi-objectid": "^3.0.1",
     "mongoose": "^5.9.21",
     "morgan": "^1.10.0"
   }

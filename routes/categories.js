@@ -18,9 +18,9 @@ router.post("/", async (req, res) => {
 
   //TODO: verify if category already exists
 
-  let category = new Category({ name: req.body.name });
+  category = new Category({ name: req.body.name });
 
-  category = await category.save();
+  await category.save();
   res.send(category);
 });
 

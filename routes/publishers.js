@@ -14,11 +14,11 @@ router.post("/", async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  let publisher = new Publisher({
+  const publisher = new Publisher({
     name: req.body.name,
   });
 
-  publisher = await publisher.save();
+  await publisher.save();
   res.send(publisher);
 });
 

@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const Joi = require("@hapi/joi");
 
 //express
 const express = require("express");
@@ -18,6 +19,8 @@ const authors = require("./routes/authors");
 const publishers = require("./routes/publishers");
 const books = require("./routes/books");
 const lends = require("./routes/lendings");
+
+Joi.objectId = require("joi-objectid")(Joi);
 
 //connect to the database
 mongoose

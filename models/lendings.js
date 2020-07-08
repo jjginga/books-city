@@ -43,11 +43,9 @@ const Lend = mongoose.model(
 );
 
 function validateLend(lend) {
-  const idPattern = /^[0-9a-fA-F]{24}$/;
-
   const schema = Joi.object({
-    customerId: Joi.string().regex(idPattern).required(),
-    bookId: Joi.string().regex(idPattern).required(),
+    customerId: Joi.objectId().required(),
+    bookId: Joi.objectId().required(),
   });
 
   return schema.validate(lend);

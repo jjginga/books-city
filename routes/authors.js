@@ -14,13 +14,13 @@ router.post("/", async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  let author = new Author({
+  const author = new Author({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     middleName: req.body.middleName,
   });
 
-  author = await author.save();
+  await author.save();
   res.send(author);
 });
 

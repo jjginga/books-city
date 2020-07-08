@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   if (!category)
     return res.status(400).send("There is no category with that Id.");
 
-  let book = new Book({
+  const book = new Book({
     title: req.body.title,
     author: {
       _id: author._id,
@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
     yearlyLends: req.body.yearlyLends,
   });
 
-  book = await book.save();
+  await book.save();
   res.send(book);
 });
 

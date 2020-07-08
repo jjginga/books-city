@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
   if (book.availableBooks === 0)
     return res.status(400).send("Book not available");
 
-  let lend = new Lend({
+  const lend = new Lend({
     customer: {
       _id: customer._id,
       name: customer.name,
