@@ -1,8 +1,8 @@
 const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
-const { authorSchema } = require("./authors");
-const { categorySchema } = require("./categories");
-const { publisherSchema } = require("./publishers");
+const { authorSchema } = require("./author");
+const { categorySchema } = require("./category");
+const { publisherSchema } = require("./publisher");
 
 const Book = mongoose.model(
   "Book",

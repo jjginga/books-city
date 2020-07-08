@@ -1,6 +1,6 @@
-const { Lend, validate, validateReturn } = require("../models/lendings");
-const { Customer } = require("../models/customers");
-const { Book } = require("../models/books");
+const { Lend, validate, validateReturn } = require("../models/lending");
+const { Customer } = require("../models/customer");
+const { Book } = require("../models/book");
 
 const mongoose = require("mongoose");
 const Fawn = require("fawn");

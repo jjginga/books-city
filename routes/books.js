@@ -1,7 +1,7 @@
-const { Book, validate } = require("../models/books");
-const { Author } = require("../models/authors");
-const { Publisher } = require("../models/publishers");
-const { Category } = require("../models/categories");
+const { Book, validate } = require("../models/book");
+const { Author } = require("../models/author");
+const { Publisher } = require("../models/publisher");
+const { Category } = require("../models/category");
 
 const express = require("express");
 const router = express.Router();

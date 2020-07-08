@@ -1,7 +1,6 @@
-//load modules
-const { Category, validate } = require("../models/categories");
+const { Category, validate } = require("../models/category");
 
-//express
+const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
 
@@ -16,9 +15,7 @@ router.post("/", async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  //TODO: verify if category already exists
-
-  category = new Category({ name: req.body.name });
+  category = new Category(_.pick(req.body, ["name"]));
 
   await category.save();
   res.send(category);
@@ -39,7 +36,7 @@ router.put("/:id", async (req, res) => {
 
   const category = await Category.findByIdAndUpdate(
     req.params.id,
-    { name: req.body.name },
+    _.pick(req.body, ["name"]),
     { new: true }
   );
 

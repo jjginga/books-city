@@ -1,7 +1,6 @@
-//load modules
-const { Customer, validate } = require("../models/customers");
+const { Customer, validate } = require("../models/customer");
 
-//express
+const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
 
@@ -16,11 +15,7 @@ router.post("/", async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  const customer = new Customer({
-    name: req.body.name,
-    phone: req.body.phone,
-    hasBook: req.body.hasBook,
-  });
+  const customer = new Customer(_.pick(req.body, ["name", "phone"]));
 
   await customer.save();
 
@@ -42,7 +37,7 @@ router.put("/:id", async (req, res) => {
 
   const customer = await Customer.findByIdAndUpdate(
     req.params.id,
-    { name: req.body.name, phone: req.body.phone, hasBook: req.body.hasBook },
+    _.pick(req.body, ["name", "phone"]),
     { new: true }
   );
 

@@ -1,5 +1,6 @@
-const { Author, validate } = require("../models/authors");
+const { Author, validate } = require("../models/author");
 
+const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
 
@@ -14,11 +15,9 @@ router.post("/", async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  const author = new Author({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    middleName: req.body.middleName,
-  });
+  const author = new Author(
+    _.pick(req.body, ["firstName", "middleName", "lastName"])
+  );
 
   await author.save();
   res.send(author);
@@ -39,11 +38,7 @@ router.put("/:id", async (req, res) => {
 
   const author = await Author.findByIdAndUpdate(
     req.params.id,
-    {
-      firstName: req.body.firstName,
-      middleName: req.body.middleName,
-      lastName: req.body.lastName,
-    },
+    _.pick(req.body, ["firstName", "middleName", "lastName"]),
     { new: true }
   );
 

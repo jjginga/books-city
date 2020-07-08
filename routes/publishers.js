@@ -1,5 +1,6 @@
-const { Publisher, validate } = require("../models/publishers");
+const { Publisher, validate } = require("../models/publisher");
 
+const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
 
@@ -14,9 +15,7 @@ router.post("/", async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  const publisher = new Publisher({
-    name: req.body.name,
-  });
+  const publisher = new Publisher(_.pick(req.body, ["name"]));
 
   await publisher.save();
   res.send(publisher);
@@ -37,9 +36,7 @@ router.put("/:id", async (req, res) => {
 
   const publisher = await Publisher.findByIdAndUpdate(
     req.params.id,
-    {
-      name: req.body.name,
-    },
+    _.pick(req.body, ["name"]),
     { new: true }
   );
 
