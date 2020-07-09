@@ -2,6 +2,8 @@ const { Lend, validate, validateReturn } = require("../models/lending");
 const { Customer } = require("../models/customer");
 const { Book } = require("../models/book");
 
+const auth = require("../middleware/auth");
+
 const mongoose = require("mongoose");
 const Fawn = require("fawn");
 
@@ -15,7 +17,7 @@ router.get("/", async (req, res) => {
   return res.send(lendings);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -67,7 +69,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { error } = validateReturn(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
