@@ -1,6 +1,8 @@
 const { Publisher, validate } = require("../models/publisher");
 
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
+const validateObjectId = require("../middleware/validateObjectId");
 
 const _ = require("lodash");
 const express = require("express");
@@ -23,7 +25,7 @@ router.post("/", auth, async (req, res) => {
   res.send(publisher);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   const publisher = await Publisher.findById(req.params.id);
 
   if (!publisher) return res.status(404).send("The publisher was not found.");
@@ -31,7 +33,7 @@ router.get("/:id", async (req, res) => {
   res.send(publisher);
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", [validateObjectId, auth], async (req, res) => {
   const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
@@ -50,7 +52,7 @@ router.put("/:id", auth, async (req, res) => {
   res.send(publisher);
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", [validateObjectId, auth, admin], async (req, res) => {
   const publisher = await Publisher.findByIdAndRemove(req.params.id);
 
   if (!publisher)

@@ -9,5 +9,5 @@ module.exports = function (dbPath) {
       useFindAndModify: false,
       useCreateIndex: true,
     })
-    .then(() => winston.info("Connected to the database..."));
+    .then(() => winston.info(`Connected to the ${dbPath}...`));
 };

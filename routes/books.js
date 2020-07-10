@@ -3,7 +3,9 @@ const { Author } = require("../models/author");
 const { Publisher } = require("../models/publisher");
 const { Category } = require("../models/category");
 
+const validateObjectId = require("../middleware/validateObjectId");
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
 const express = require("express");
 const router = express.Router();
@@ -54,7 +56,7 @@ router.post("/", auth, async (req, res) => {
   res.send(book);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   const book = await Book.findById(req.params.id);
 
   if (!book) return res.status(404).send("The book was not found.");
@@ -62,7 +64,7 @@ router.get("/:id", async (req, res) => {
   res.send(book);
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", [validateObjectId, auth], async (req, res) => {
   const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
@@ -108,7 +110,7 @@ router.put("/:id", auth, async (req, res) => {
   res.send(book);
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", [validateObjectId, auth, admin], async (req, res) => {
   const book = await Book.findByIdAndRemove(req.params.id);
 
   if (!book)

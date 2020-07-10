@@ -1,0 +1,4 @@
+{
+  "jwtPrivateKey": "testprivatekey",
+  "database": "mongodb://localhost:27017/books-city_test"
+}

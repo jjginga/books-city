@@ -1,6 +1,8 @@
 const { Author, validate } = require("../models/author");
 
+const validateObjectId = require("../middleware/validateObjectId");
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
@@ -24,7 +26,7 @@ router.post("/", auth, async (req, res) => {
   res.send(author);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   const author = await Author.findById(req.params.id);
 
   if (!author) return res.status(404).send("The author was not found.");
@@ -32,7 +34,7 @@ router.get("/:id", async (req, res) => {
   res.send(author);
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", [validateObjectId, auth], async (req, res) => {
   const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
@@ -49,7 +51,7 @@ router.put("/:id", auth, async (req, res) => {
   res.send(author);
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", [validateObjectId, auth, admin], async (req, res) => {
   const author = await Author.findByIdAndRemove(req.params.id);
 
   if (!author)

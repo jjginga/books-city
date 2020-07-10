@@ -3,6 +3,7 @@ const { Customer } = require("../models/customer");
 const { Book } = require("../models/book");
 
 const auth = require("../middleware/auth");
+const validateObjectId = require("../middleware/validateObjectId");
 
 const mongoose = require("mongoose");
 const Fawn = require("fawn");
@@ -69,7 +70,7 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", [validateObjectId, auth], async (req, res) => {
   const { error } = validateReturn(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
