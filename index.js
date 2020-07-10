@@ -10,6 +10,7 @@ require("./startup/database")(dbPath);
 require("./startup/logging")(dbPath);
 require("./startup/config")();
 require("./startup/api")(app);
+require("./startup/prod")(app);
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () =>

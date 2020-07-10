@@ -8,8 +8,8 @@ describe("/api/categories", () => {
     server = require("../../../index");
   });
   afterEach(async () => {
-    await Category.remove({});
-    server.close();
+    await server.close();
+    await Category.deleteMany({});
   });
 
   describe("GET /", () => {

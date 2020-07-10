@@ -1,4 +1,4 @@
-const { Lend, validate, validateReturn } = require("../models/lending");
+const { Lend, validate, validateExtend } = require("../models/lending");
 const { Customer } = require("../models/customer");
 const { Book } = require("../models/book");
 
@@ -71,7 +71,7 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.put("/:id", [validateObjectId, auth], async (req, res) => {
-  const { error } = validateReturn(req.body);
+  const { error } = validateExtend(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const lend = await Lend.findById(req.params.id);
@@ -80,41 +80,13 @@ router.put("/:id", [validateObjectId, auth], async (req, res) => {
     return res.status(404).send("The lend with the given Id was not found");
 
   if (!req.body.hasReturned) {
-    lend.returnDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
-
-    lend.save();
-    return res.send(lend);
+    res.status(400).send("Bad request");
   }
 
-  try {
-    new Fawn.Task()
-      .update(
-        "lends",
-        { _id: lend._id },
-        {
-          $set: { hasReturned: true },
-        }
-      )
-      .update(
-        "customers",
-        { _id: lend.customer._id },
-        {
-          $set: { hasBook: false },
-        }
-      )
-      .update(
-        "books",
-        { _id: lend.book._id },
-        {
-          $inc: { availableBooks: +1 },
-        }
-      )
-      .run();
+  lend.dueDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
 
-    return res.send(lend);
-  } catch (error) {
-    return res.status(500).send("Something went wrong.", error.message);
-  }
+  lend.save();
+  return res.send(lend);
 });
 
 module.exports = router;
