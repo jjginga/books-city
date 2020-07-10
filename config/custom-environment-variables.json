@@ -1,3 +1,4 @@
 {
-  "jwtPrivateKey": "bookscity_jwtPrivateKey"
+  "jwtPrivateKey": "bookscity_jwtPrivateKey",
+  "database": "bookscity_database"
 }

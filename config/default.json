@@ -1,4 +1,4 @@
 {
   "jwtPrivateKey": "",
-  "database": "mongodb://localhost:27017/books-city"
+  "database": ""
 }
