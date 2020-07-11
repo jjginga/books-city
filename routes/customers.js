@@ -40,7 +40,9 @@ router.put(
     );
 
     if (!customer)
-      res.status(404).send("The customer with the given ID doesn't exist.");
+      return res
+        .status(404)
+        .send("The customer with the given ID doesn't exist.");
 
     res.send(customer);
   }
@@ -54,7 +56,7 @@ router.delete("/:id", [auth, admin, validateObjectId], async (req, res) => {
       .status(404)
       .send("The customer with the given ID wasn't not found.");
 
-  res.send();
+  res.send(customer);
 });
 
 module.exports = router;
