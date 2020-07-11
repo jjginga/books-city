@@ -22,4 +22,4 @@ function validateCategory(category) {
 
 module.exports.Category = Category;
 module.exports.categorySchema = categorySchema;
-module.exports.validate = validateCategory;
+module.exports.validateCategory = validateCategory;

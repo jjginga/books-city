@@ -1,8 +1,9 @@
-const { Category, validate } = require("../models/category");
+const { Category, validateCategory } = require("../models/category");
 
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
+const validate = require("../middleware/validate");
 
 const _ = require("lodash");
 const express = require("express");
@@ -15,11 +16,7 @@ router.get("/", async (req, res, next) => {
   res.send(categories);
 });
 
-router.post("/", auth, async (req, res) => {
-  const { error } = validate(req.body);
-
-  if (error) return res.status(400).send(error.details[0].message);
-
+router.post("/", [auth, validate(validateCategory)], async (req, res) => {
   category = new Category(_.pick(req.body, ["name"]));
 
   await category.save();
@@ -33,25 +30,26 @@ router.get("/:id", validateObjectId, async (req, res) => {
   res.send(category);
 });
 
-router.put("/:id", [validateObjectId, auth], async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+router.put(
+  "/:id",
+  [auth, validateObjectId, validate(validateCategory)],
+  async (req, res) => {
+    const category = await Category.findByIdAndUpdate(
+      req.params.id,
+      _.pick(req.body, ["name"]),
+      { new: true }
+    );
 
-  const category = await Category.findByIdAndUpdate(
-    req.params.id,
-    _.pick(req.body, ["name"]),
-    { new: true }
-  );
+    if (!category)
+      return res
+        .status(404)
+        .send("The category with the given ID was not found!");
 
-  if (!category)
-    return res
-      .status(404)
-      .send("The category with the given ID was not found!");
+    res.send(category);
+  }
+);
 
-  res.send(category);
-});
-
-router.delete("/:id", [validateObjectId, auth, admin], async (req, res) => {
+router.delete("/:id", [auth, admin, validateObjectId], async (req, res) => {
   const category = await Category.findByIdAndRemove(req.params.id);
 
   if (!category)

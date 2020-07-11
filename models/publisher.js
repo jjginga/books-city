@@ -22,4 +22,4 @@ function validatePublisher(publisher) {
 
 module.exports.Publisher = Publisher;
 module.exports.publisherSchema = publisherSchema;
-module.exports.validate = validatePublisher;
+module.exports.validatePublisher = validatePublisher;

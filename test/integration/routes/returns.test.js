@@ -75,7 +75,7 @@ describe("/api/returns", () => {
       .send({ customerId, bookId });
   };
 
-  it("should return 401 if customer is not logged in", async () => {
+  it("should return 401 if client is not logged in", async () => {
     token = "";
     const res = await execute();
 

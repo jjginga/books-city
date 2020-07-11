@@ -1,6 +1,32 @@
+const request = require("supertest");
+const { Author } = require("../../../models/author");
+const { User } = require("../../../models/user");
+
+describe("/api/authors", () => {
+  beforeEach(() => {
+    server = require("../../../index");
+  });
+  afterEach(async () => {
+    await server.close();
+    await Author.deleteMany({});
+  });
+
+  describe("GET /", () => {
+    it("should all authors", async () => {
+      await Author.collection.insertMany([
+        { firstName: "author1", lastName: "last1" },
+        { firstName: "author2", lastName: "last2" },
+      ]);
+
+      const res = await request(server).get("/api/authors");
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBe(2);
+      expect(res.body.some((g) => g.firstName === "author1")).toBeTruthy();
+      expect(res.body.some((g) => g.lastName === "last2")).toBeTruthy();
+    });
+  });
+});
 //authors
-//GET
-//should return all authors
 
 //GET id
 //should return 401 if invalid Id is passed
