@@ -28,7 +28,6 @@ router.post("/", auth, async (req, res) => {
 
 router.get("/:id", validateObjectId, async (req, res) => {
   const category = await Category.findById(req.params.id);
-
   if (!category) return res.status(404).send("The category was not found");
 
   res.send(category);
@@ -36,7 +35,6 @@ router.get("/:id", validateObjectId, async (req, res) => {
 
 router.put("/:id", [validateObjectId, auth], async (req, res) => {
   const { error } = validate(req.body);
-
   if (error) return res.status(400).send(error.details[0].message);
 
   const category = await Category.findByIdAndUpdate(

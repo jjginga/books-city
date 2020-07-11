@@ -80,7 +80,7 @@ describe("/api/categories", () => {
       expect(res.status).toBe(400);
     });
 
-    it("should return 400 if category is more than 3 characters", async () => {
+    it("should return 400 if category is more than 50 characters", async () => {
       name = new Array(52).join("a");
       const res = await execute();
 
@@ -100,6 +100,127 @@ describe("/api/categories", () => {
 
       expect(res.body).toHaveProperty("_id");
       expect(res.body).toHaveProperty("name", "category1");
+    });
+  });
+
+  describe("PUT /:id", () => {
+    let token;
+    let name;
+    let category;
+
+    const execute = async () => {
+      return await request(server)
+        .put(`/api/categories/${category._id.toHexString()}`)
+        .set("x-auth-token", token)
+        .send({ name });
+    };
+
+    beforeEach(async () => {
+      token = new User().generateAuthToken();
+      name = "category1";
+      category = new Category({ name });
+      await category.save();
+    });
+
+    it("should return 401 if client is not logged in", async () => {
+      token = "";
+      const res = await execute();
+
+      expect(res.status).toBe(401);
+    });
+
+    it("should return 404 if invalid id is passed", async () => {
+      category._id = new mongoose.Types.ObjectId().toHexString();
+      const res = await execute();
+
+      expect(res.status).toBe(404);
+    });
+
+    it("should return 400 if category is less than 3 characters", async () => {
+      name = "a";
+      const res = await execute();
+
+      expect(res.status).toBe(400);
+    });
+
+    it("should return 400 if category is more than 50 characters", async () => {
+      name = new Array(52).join("a");
+      const res = await execute();
+
+      expect(res.status).toBe(400);
+    });
+
+    it("should save category if it is valid", async () => {
+      name = "category2";
+      await execute();
+
+      const category = await Category.find({ name });
+
+      expect(category).not.toBeNull();
+    });
+
+    it("should return the category if it is valid", async () => {
+      name = "category2";
+      const res = await execute();
+
+      expect(res.body).toHaveProperty("_id");
+      expect(res.body).toHaveProperty("name", name);
+    });
+  });
+
+  describe("DELETE /:id", () => {
+    let token;
+    let name;
+    let category;
+
+    const execute = async () => {
+      return await request(server)
+        .delete(`/api/categories/${category._id.toHexString()}`)
+        .set("x-auth-token", token)
+        .send();
+    };
+
+    beforeEach(async () => {
+      token = new User({ isAdmin: true }).generateAuthToken();
+      name = "category1";
+      category = new Category({ name });
+      await category.save();
+    });
+
+    it("should return 401 if client is not logged in", async () => {
+      token = "";
+      const res = await execute();
+
+      expect(res.status).toBe(401);
+    });
+
+    it("should return 403 if client is not admin", async () => {
+      token = new User().generateAuthToken();
+      const res = await execute();
+
+      expect(res.status).toBe(403);
+    });
+
+    it("should return 404 if invalid id is passed", async () => {
+      category._id = new mongoose.Types.ObjectId().toHexString();
+      const res = await execute();
+
+      expect(res.status).toBe(404);
+    });
+
+    it("should delete category if request is valid", async () => {
+      await execute();
+
+      const category = await Category.find({ name: "category1" });
+
+      expect(category.length).toBe(0);
+    });
+
+    it("should return the category if request is valid", async () => {
+      const res = await execute();
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("name", category.name);
     });
   });
 });

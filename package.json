@@ -4,7 +4,7 @@
   "description": "Library management system.",
   "main": "index.js",
   "scripts": {
-    "test": "jest --testEnvironment=node --runInBand --watchAll --verbose ",
+    "test": "jest --testEnvironment=node --runInBand --watchAll --verbose --coverage",
     "start": "node index.js"
   },
   "engines": {
