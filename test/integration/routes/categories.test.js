@@ -162,7 +162,7 @@ describe("/api/categories", () => {
       expect(res.status).toBe(400);
     });
 
-    it("should return 404 if no publisher with the given id was found", async () => {
+    it("should return 404 if no category with the given id was found", async () => {
       id = new mongoose.Types.ObjectId().toHexString();
       const res = await execute();
 
@@ -178,7 +178,7 @@ describe("/api/categories", () => {
       expect(category).not.toBeNull();
     });
 
-    it("should return category if it is valid", async () => {
+    it("should return the new category if it is valid", async () => {
       name = "category2";
       const res = await execute();
 

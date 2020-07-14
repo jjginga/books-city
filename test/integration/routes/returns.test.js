@@ -132,7 +132,7 @@ describe("/api/returns", () => {
     expect(dbLend.penalty).toBe(1);
   });
 
-  it("should increase movie stock on return", async () => {
+  it("should increase book stock on return", async () => {
     await execute();
 
     const dbBook = await Book.findById(book._id);
@@ -146,10 +146,9 @@ describe("/api/returns", () => {
     expect(dbCustomer.hasBook).toBeFalsy();
   });
 
-  it("should return the rental if the request is valid", async () => {
+  it("should return the lending if the request is valid", async () => {
     const res = await execute();
 
-    const dbLend = await Lend.findById(lend._id);
     expect(Object.keys(res.body)).toEqual(
       expect.arrayContaining([
         "outDate",

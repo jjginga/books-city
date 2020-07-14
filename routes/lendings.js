@@ -1,34 +1,27 @@
-const { Lend, validate, validateExtend } = require("../models/lending");
+const { Lend, validate: validateLend } = require("../models/lending");
 const { Customer } = require("../models/customer");
 const { Book } = require("../models/book");
 
 const auth = require("../middleware/auth");
-const validateObjectId = require("../middleware/validateObjectId");
-
-const mongoose = require("mongoose");
-const Fawn = require("fawn");
+const validate = require("../middleware/validate");
 
 const express = require("express");
 const router = express.Router();
-
-Fawn.init(mongoose);
 
 router.get("/", async (req, res) => {
   const lendings = await Lend.find().sort("-outDate");
   return res.send(lendings);
 });
 
-router.post("/", auth, async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
+router.post("/", [auth, validate(validateLend)], async (req, res) => {
   const customer = await Customer.findById(req.body.customerId);
   if (!customer)
     return res.status(400).send("There is no customer with this Id.");
-  if (customer.hasBook) return res.status(400).send("Please return book first");
 
   const book = await Book.findById(req.body.bookId);
   if (!book) return res.status(400).send("There is no Book with this Id.");
+
+  if (customer.hasBook) return res.status(400).send("Please return book first");
 
   if (book.availableBooks === 0)
     return res.status(400).send("Book not available");
@@ -45,43 +38,31 @@ router.post("/", auth, async (req, res) => {
     },
   });
 
-  try {
-    new Fawn.Task()
-      .save("lends", lend)
-      .update(
-        "books",
-        { _id: book._id },
-        {
-          $inc: { availableBooks: -1 },
-        }
-      )
-      .update(
-        "customers",
-        { _id: customer._id },
-        {
-          $set: { hasBook: true },
-        }
-      )
-      .run();
+  await lend.save();
 
-    return res.send(lend);
-  } catch (error) {
-    return res.status(500).send("Something went wrong.");
-  }
+  await Book.update(
+    { _id: lend.book.id },
+    {
+      $inc: { availableBooks: -1 },
+    }
+  );
+
+  await Customer.update(
+    { _id: lend.customer.id },
+    {
+      $set: { hasBook: true },
+    }
+  );
+  res.send(lend);
 });
 
-router.put("/:id", [validateObjectId, auth], async (req, res) => {
-  const { error } = validateExtend(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  const lend = await Lend.findById(req.params.id);
+router.put("/", [auth, validate(validateLend)], async (req, res) => {
+  const lend = await Lend.lookup(req.body.customerId, req.body.bookId);
 
   if (!lend)
-    return res.status(404).send("The lend with the given Id was not found");
+    return res.status(404).send("no lend with given customer and book");
 
-  if (!req.body.hasReturned) {
-    res.status(400).send("Bad request");
-  }
+  if (lend.returnDate) return res.status(400).send("return already processed");
 
   lend.dueDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
 

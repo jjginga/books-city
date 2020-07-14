@@ -43,14 +43,6 @@ const Book = mongoose.model(
         message: "{VALUE} is not an integer value",
       },
     },
-    yearlyLends: {
-      type: Number,
-      min: 0,
-      validate: {
-        validator: Number.isInteger,
-        message: "{VALUE} is nor an integer value",
-      },
-    },
   })
 );
 
@@ -62,7 +54,6 @@ function validateBook(book) {
     publisherId: Joi.objectId().required(),
     stock: Joi.number().integer().required(),
     availableBooks: Joi.number().integer(),
-    yearlyLends: Joi.number().integer(),
   });
 
   return schema.validate(book);

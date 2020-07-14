@@ -49,6 +49,7 @@ lendSchema.statics.lookup = function (customerId, bookId) {
   });
 };
 
+//fine, one euro per day after due date
 lendSchema.methods.return = function () {
   if (this.dueDate < this.returnDate) {
     this.penalty = Math.floor(
@@ -68,24 +69,5 @@ function validateLend(lend) {
   return schema.validate(lend);
 }
 
-function validateExtend(lend) {
-  const schema = Joi.object({
-    hasReturned: Joi.boolean(),
-  });
-
-  return schema.validate(lend);
-}
-
-function validateReturn(req) {
-  const schema = Joi.object({
-    customerId: Joi.objectId().required(),
-    bookId: Joi.objectId().required(),
-  });
-
-  return schema.validate(req);
-}
-
 module.exports.Lend = Lend;
 module.exports.validate = validateLend;
-module.exports.validateExtend = validateExtend;
-module.exports.validateReturn = validateReturn;

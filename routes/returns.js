@@ -1,4 +1,4 @@
-const { Lend, validateReturn } = require("../models/lending");
+const { Lend, validate: validateLend } = require("../models/lending");
 const { Book } = require("../models/book");
 const { Customer } = require("../models/customer");
 
@@ -7,7 +7,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const validate = require("../middleware/validate");
 
-router.post("/", [auth, validate(validateReturn)], async (req, res, next) => {
+router.post("/", [auth, validate(validateLend)], async (req, res, next) => {
   const lend = await Lend.lookup(req.body.customerId, req.body.bookId);
 
   if (!lend)
