@@ -283,29 +283,3 @@ const lendStore = async (customer, book) => {
 
   return await lend.save();
 };
-//GET /
-//should return all the lendings
-
-//POST /
-//should return 401 if client is not logged in
-//should return 400 if customer id is not provided
-//should return 400 if book id is not provided
-//should return 400 if there is no customer with given id
-//should return 400 if there is no book with given id
-//should return 400 if customer already has a book
-//should return 400 if there is no book available
-//should return 200 if valid request
-//should decrement available books on valid request;
-//should update customer status on valid request
-//should set due date
-//should return the lending on valid request
-
-//PUT /:id
-//should return 401 if client is not logged in
-//should return 400 if customerId is not provided
-//should return 400 if bookId is not provided
-//should return 404 if no lend is found for given Id
-//should return 400 if book has already been returned
-//should return 200 if valid request
-//should extend due date
-//should return the lending

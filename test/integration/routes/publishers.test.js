@@ -252,35 +252,3 @@ describe("/api/publishers", () => {
     });
   });
 });
-
-//GET
-//should return all publishers
-
-//Get /:id
-//should return 404 if invalid Id is passed
-//should return 404 if no publisher with the given ID is found
-//should return a publisher if valid id is passed
-
-//POST
-//should return 401 if client is not logged in
-//should return 400 if publisher's name is under 5 characters
-//should return 400 if publisher's name is over 50 characters
-//should save publisher if if is valid
-//should return publisher if it is valid
-
-//PUT
-//should return 401 if client is not logged in
-//should return 404 if invalid id is passed
-//should return 400 if publisher's name is under 5 characters
-//should return 400 if publisher's name is over 50 characters
-//should return 404 if no publisher with the given id was found
-//should save publisher with the changes
-//should return publisher if it is valid
-
-//DELETE
-//should return 401 if client is not logged if
-//should return 403 if client is not admin
-//should return 404 if invalid id is passed
-//should return 404 if no publisher with the given id was found
-//should delete publisher if is valid
-//should return the publisher if is valid

@@ -224,7 +224,7 @@ describe("/api/customers", () => {
       expect(customer).not.toBeNull();
     });
 
-    it("should return customer if it is valid", async () => {
+    it("should return the new customer if it is valid", async () => {
       name = "customer2";
       const res = await execute();
 

@@ -155,22 +155,3 @@ describe("/api/users", () => {
     });
   });
 });
-
-//GET /me
-//should return 401 if client is not logged in
-//should return the user
-//should not return the password
-
-//POST
-//should return 400 if user's name is under 3 characters;
-//should return 400 if user's name is over 50 characters;
-//should return 400 if user's email is under 5 characters;
-//should return 400 if user's email is over 255 characters;
-//should return 400 if user's email does not have email format;
-//should return 400 if password is under 6 characters;
-//should return 400 if password is over 255 characters;
-//should return 400 if user already registered;
-//should save user;
-//should return user;
-//should not return token
-//should return token in header

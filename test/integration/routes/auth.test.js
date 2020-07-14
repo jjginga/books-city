@@ -81,13 +81,3 @@ describe("/api/auth", () => {
     });
   });
 });
-
-//POST
-//should return 400 if email is under 5 characters
-//should return 400 if email is over 255 characters
-//should return 400 if email does not have email format
-//should return 400 if password is under 6 characters
-//should return 400 if password is over 255 characters
-//should return 400 if there is no user with given email
-//should return 400 if password is invalid
-//should return token
