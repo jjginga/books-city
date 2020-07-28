@@ -1,4 +1,5 @@
 {
   "jwtPrivateKey": "",
-  "database": ""
+  "database": "",
+  "port": "3900"
 }
