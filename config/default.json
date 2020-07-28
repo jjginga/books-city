@@ -1,5 +1,6 @@
 {
   "jwtPrivateKey": "",
   "database": "",
-  "port": "3900"
+  "port": "3900",
+  "requiresAuth": false
 }
