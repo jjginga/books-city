@@ -1,0 +1,2 @@
+export bookscity_database=mongodb://localhost:27017/books-city
+export bookscity_jwtPrivateKey=somekey
