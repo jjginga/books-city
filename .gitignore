@@ -164,3 +164,4 @@ $RECYCLE.BIN/
 
 node_modules/
 coverage/
+environment_variables

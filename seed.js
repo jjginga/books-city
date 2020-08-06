@@ -2,6 +2,8 @@ const { Category } = require('./models/category');
 const { Author } = require('./models/author');
 const { Publisher } = require('./models/publisher');
 const { Book } = require('./models/book');
+const { Customer } = require('./models/customer');
+const { Lend } = require('./models/lending');
 
 const mongoose = require('mongoose');
 const config = require('config');
@@ -127,6 +129,88 @@ const booksData = [
   },
 ];
 
+const customerData = [
+  {
+    name: 'Sam Sung',
+    phone: '123456789',
+  },
+  {
+    name: 'Chris P. Bacon',
+    phone: '123456789',
+  },
+  {
+    name: 'Jack Daniels',
+    phone: '123456789',
+    hasBook: true,
+  },
+  {
+    name: 'Ima Hogg',
+    phone: '123456789',
+    hasBook: true,
+  },
+  {
+    name: 'Jed I Knight',
+    phone: '123456789',
+  },
+  {
+    name: 'Barbie Cue',
+    phone: '123456789',
+  },
+];
+
+const lendingData = [
+  {
+    customer: {
+      name: 'Jack Daniels',
+      phone: '123456789',
+      hasBook: true,
+    },
+    book: {
+      title: 'All Life is Problem Solving',
+    },
+    outDate: Date.now() - 4 * 24 * 60 * 60 * 1000,
+    dueDate: Date.now() + 3 * 24 * 60 * 60 * 1000,
+  },
+  {
+    customer: {
+      name: 'Ima Hogg',
+      phone: '123456789',
+      hasBook: true,
+    },
+    book: {
+      title: 'The Open Society and Its Enemies',
+    },
+    outDate: Date.now() - 8 * 24 * 60 * 60 * 1000,
+    dueDate: Date.now() - 1 * 24 * 60 * 60 * 1000,
+  },
+  {
+    customer: {
+      name: 'Sam Sung',
+      phone: '123456789',
+      hasBook: false,
+    },
+    book: {
+      title: 'All Life is Problem Solving',
+    },
+    outDate: Date.now() - 8 * 24 * 60 * 60 * 1000,
+    dueDate: Date.now() - 1 * 24 * 60 * 60 * 1000,
+    returnDate: Date.now() - 1 * 24 * 60 * 60 * 1000,
+  },
+  {
+    customer: {
+      name: 'Barbie Cue',
+      phone: '123456789',
+      hasBook: false,
+    },
+    book: {
+      title: 'Political Theology',
+    },
+    outDate: Date.now() - 14 * 24 * 60 * 60 * 1000,
+    dueDate: Date.now() - 7 * 24 * 60 * 60 * 1000,
+    returnDate: Date.now() - 12 * 24 * 60 * 60 * 1000,
+  },
+];
+
 async function seed() {
   await mongoose.connect(config.get('database'));
 
@@ -134,10 +218,13 @@ async function seed() {
   await Publisher.deleteMany({});
   await Author.deleteMany({});
   await Book.deleteMany({});
+  await Customer.deleteMany({});
+  await Lend.deleteMany({});
 
   await Category.insertMany(categoriesData);
   await Publisher.insertMany(publishersData);
   await Author.insertMany(authorData);
+  await Customer.insertMany(customerData);
 
   const books = await Promise.all(
     booksData.map(async (book) => {
@@ -160,9 +247,8 @@ async function seed() {
     })
   );
 
-  console.log(books);
-
   await Book.insertMany(books);
+  await Lend.insertMany(lendingData);
 
   mongoose.disconnect();
   console.log('Seeded!');
