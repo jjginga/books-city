@@ -14,5 +14,5 @@ Check out the gets at /api/:
 
 (example: https://obscure-escarpment-61817.herokuapp.com/api/categories)
 
-also I use this API for my Books-City front end app (https://github.com/jjginga/books-city-frontend)
+also I use this API for my Books-City front end app ( https://books-city.herokuapp.com/books || repository: https://github.com/jjginga/books-city-frontend)
 
